@@ -1,1 +1,1 @@
-CREATE DATABASE DataWerehouese
+CREATE DATABASE DataWerehouse

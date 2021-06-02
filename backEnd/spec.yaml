@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: DataWerehouse
+  description: >-
+    Generarás una herramienta que permita a una compañía de Marketing administrar todos los contactos de sus clientes para sus campañas.
+
+  contact:
+    name: Camilo Morales Sanchez
+    email: moorales.camilo@gmial.com
+servers:
+  - url: http://localhost:3000/apiv1
+
+tags: 
+  - name: Users
+    description: Everything about Users
+
+paths:
+  /create-user/:
+    post:
+      tags: 
+        - Users
+      description: "create user in data base"
+      responses:
+        200:
+          description: "the confirmed user return "
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+                
+        400:
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+
+components:
+  schemas:
+    user:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: "Ejemplo 1"
+        lastName:
+          type: string
+          example: "Ejemplo 1"
+        email:
+          type: string
+          example: "ejemplo1@correo.com"
+        password:
+          type: string
+          example: "contrasena1234"
+        role:
+          type: string
+          enum: ["ADMIN_ROLE", "USER_ROLE"]
+          description: "this field is optional for default is USER_ROL"
+    error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+                example: "corre1@correo.com"
+              msg:
+                type: string
+                example: "The email correo1@correo.com is already registered"
+              param:
+                type: string
+                example: "email"
+              location:
+                type: string
+                example: "body"
+      
+      
+      

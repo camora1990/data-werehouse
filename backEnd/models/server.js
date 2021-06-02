@@ -9,6 +9,7 @@ class Server {
     this.app = express();
 
     this.paths = {
+      auth: "/apiv1/auth",
       channels: "/apiv1/channel",
       cities: "/apiv1/city",
       companies: "/apiv1/company",
@@ -18,7 +19,7 @@ class Server {
       roles: "/apiv1/role",
       users: "/apiv1/user",
     };
-    this.connectDatabase()
+    this.connectDatabase();
     this.middelwares();
     this.routes();
   }
@@ -29,13 +30,14 @@ class Server {
   }
 
   async connectDatabase() {
-    const connect = new DataBase()
+    this.connect = new DataBase();
 
-    await connect.DBConnection()
+    return await this.connect.DBConnection();
   }
 
   routes() {
-    this.app.use(this.paths.users, require("../routes/user.route"));
+    this.app.use(this.paths.users, require("../routes/user.routes"));
+    this.app.use(this.paths.auth, require('../routes/auth.routes'))
   }
 
   startServer() {
