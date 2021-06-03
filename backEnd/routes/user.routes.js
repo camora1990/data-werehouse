@@ -1,13 +1,15 @@
-const { Router, response, request } = require("express");
-const { check } = require("express-validator");
+const { Router } = require("express");
+const { check, header } = require("express-validator");
 const { createUser } = require("../controllers");
 const { validateRoleName, validateEmail } = require("../helpers/db-validators");
-const { validateFields } = require("../middelwares/validate-fields");
+const { validateFields, validateJWT, isValidRole } = require("../middelwares");
 const router = Router();
 
 router.post(
   "/create-user",
   [
+    header('Authorization',"Authorization is required").not().isEmpty(),
+    validateFields,
     check("firstName", "firstName is required").not().isEmpty(),
     check("lastName", "LastName is required").not().isEmpty(),
     check("email", "Email is required")
@@ -29,6 +31,8 @@ router.post(
       .withMessage("The pasword must contain a number!!"),
 
     validateFields,
+    validateJWT,
+    isValidRole
   ],
   createUser
 );

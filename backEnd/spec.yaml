@@ -14,13 +14,25 @@ servers:
 tags: 
   - name: Users
     description: Everything about Users
+  - name: login
+    description: login the app
+
 
 paths:
-  /create-user/:
+  /user/create-user/:
     post:
       tags: 
         - Users
       description: "create user in data base"
+      security: 
+        - bearerAuth: []
+      requestBody:
+        description: body with user information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user"
       responses:
         200:
           description: "the confirmed user return "
@@ -34,10 +46,59 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error"
-
+                $ref: "#/components/schemas/errors"
+        401:
+          description: "Must be authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/messageError"
+  /auth/login/:
+    post:
+      tags: 
+       - login
+      description: "login the app"
+      requestBody:
+        description: "body with user and password"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/login"
+      responses:
+        200:
+          description: "return token"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTYyMjY1NzA4NSwiZXhwIjoxNjIyNzQzNDg1fQ.vL1Zl0YIfvAPr50uIpdzGksb13gtyE4pyoD_xwPyFqI"
+        400:
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errors"
+        500:
+          description: "Token was not generated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/messageError"
 components:
   schemas:
+    login:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "ejemplo1@correo.com"
+        password:
+          type: string
+          example: contrasena1234
     user:
       type: object
       properties:
@@ -57,7 +118,13 @@ components:
           type: string
           enum: ["ADMIN_ROLE", "USER_ROLE"]
           description: "this field is optional for default is USER_ROL"
-    error:
+    messageError:
+      type: object
+      properties:
+        msg:
+          type: string
+          example: "Invalid password"
+    errors:
       type: object
       properties:
         errors:
@@ -77,6 +144,16 @@ components:
               location:
                 type: string
                 example: "body"
-      
-      
-      
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+                
+                
+                
+                
+                
+                
+                
+                
