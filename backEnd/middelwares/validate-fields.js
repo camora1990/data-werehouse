@@ -9,7 +9,7 @@ const { validationResult } = require("express-validator");
  * @returns 
  * @author Camilo Morales Sanchez.
  */
-const validateFields = (req = request, res = response, next) => {
+const validatesFields = (req = request, res = response, next) => {
   const errors = validationResult(req);
   if(!errors.isEmpty()){
       return res.status(400).json(
@@ -21,5 +21,5 @@ const validateFields = (req = request, res = response, next) => {
 
 
 module.exports = {
-    validateFields
+    validatesFields
 }

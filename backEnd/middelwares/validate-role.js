@@ -1,5 +1,13 @@
 const { request, response } = require("express");
 
+
+/**
+ * Validates user role
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
 const isValidRole = (req = request, res = response, next) => {
   const { role, email } = req.authenticatedUser;
   if (role !== "ADMIN_ROLE") {

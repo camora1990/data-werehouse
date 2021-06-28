@@ -24,6 +24,11 @@ const createUser = async (req = request, res = response) => {
   });
 };
 
+const deleteUser=(req=request, res = response)=>{
+  res.json('oki')
+}
+
 module.exports = {
   createUser,
+  deleteUser
 };

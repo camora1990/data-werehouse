@@ -1,7 +1,13 @@
 require("dotenv").config();
 
 const { Sequelize, DataTypes } = require("sequelize");
-const { RoleModel, UserModel } = require("../models");
+const {
+  RoleModel,
+  UserModel,
+  RegionModel,
+  CountryModel,
+  CityModel,
+} = require("../models");
 
 class DataBase {
   constructor() {
@@ -22,12 +28,13 @@ class DataBase {
       }
     );
     this.createModels();
+    this.relationshipDataBase();
   }
 
   async DBConnection() {
     try {
       await this.createEntities();
-      this.sequelize.authenticate();
+      await this.sequelize.authenticate();
       console.log("Data base connected");
     } catch (error) {
       console.log(errr);
@@ -46,12 +53,27 @@ class DataBase {
   createModels() {
     this.roleEntity = RoleModel(this.sequelize, DataTypes);
     this.userEntity = UserModel(this.sequelize, DataTypes);
+    this.regionsEntity = RegionModel(this.sequelize, DataTypes);
+    this.countryEntity = CountryModel(this.sequelize, DataTypes);
+    this.cityEntity = CityModel(this.sequelize, DataTypes);
+
     module.exports = {
-      userEntity: this.userEntity,
+      cityEntity: this.cityEntity,
+      countryEntity: this.countryEntity,
+      regionEntity: this.regionsEntity,
       roleEntity: this.roleEntity,
+      userEntity: this.userEntity,
     };
+  }
+
+  relationshipDataBase() {
+    this.regionsEntity.hasMany(this.countryEntity, {
+      foreignKey: { name: "regionId" },
+    });
+    this.countryEntity.hasMany(this.cityEntity, {
+      foreignKey: "countryId",
+    });
   }
 }
 
 module.exports = DataBase;
-

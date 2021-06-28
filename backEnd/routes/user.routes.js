@@ -1,15 +1,21 @@
 const { Router } = require("express");
 const { check, header } = require("express-validator");
-const { createUser } = require("../controllers");
-const { validateRoleName, validateEmail } = require("../helpers/db-validators");
-const { validateFields, validateJWT, isValidRole } = require("../middelwares");
+const { createUser, deleteUser } = require("../controllers");
+const {
+  validatesRoleName,
+  validatesEmail,
+  validatesIdUser,
+} = require("../helpers/db-validators");
+const { validatesFields, validatesJWT, isValidRole } = require("../middelwares");
 const router = Router();
 
 router.post(
   "/create-user",
   [
-    header('Authorization',"Authorization is required").not().isEmpty(),
-    validateFields,
+    header("Authorization", "Authorization is required").not().isEmpty(),
+    validatesFields,
+    validatesJWT,
+    isValidRole,
     check("firstName", "firstName is required").not().isEmpty(),
     check("lastName", "LastName is required").not().isEmpty(),
     check("email", "Email is required")
@@ -18,8 +24,8 @@ router.post(
       .if(check("email").exists())
       .isEmail()
       .withMessage("Enter valid email")
-      .custom(validateEmail),
-    check("role").if(check("role").exists()).custom(validateRoleName),
+      .custom(validatesEmail),
+    check("role").if(check("role").exists()).custom(validatesRoleName),
     check("password")
       .not()
       .isEmpty()
@@ -30,11 +36,26 @@ router.post(
       .matches(/\d/)
       .withMessage("The pasword must contain a number!!"),
 
-    validateFields,
-    validateJWT,
-    isValidRole
+    validatesFields,
   ],
   createUser
+);
+
+router.delete(
+  "/delete-user/:id",
+  [
+    header("Authorization", "Authorization is required").not().isEmpty(),
+    validatesFields,
+    validatesJWT,
+    isValidRole,
+    check("id")
+      .isInt()
+      .withMessage("The id is not integer")
+      .if(check("id").isInt())
+      .custom(validatesIdUser),
+    validatesFields,
+  ],
+  deleteUser
 );
 
 module.exports = router;

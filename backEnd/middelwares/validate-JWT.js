@@ -2,7 +2,15 @@ const { response, request } = require("express");
 const jwt = require("jsonwebtoken");
 const { userEntity } = require("../database/connection.dataBase");
 
-const validateJWT = async (req = request, res = response, next) => {
+
+/**
+ * Validates json web tokend jwt
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
+const validatesJWT = async (req = request, res = response, next) => {
   const token = req.header("Authorization").split(" ")[1];
 
   if (!token) {
@@ -39,5 +47,5 @@ const validateJWT = async (req = request, res = response, next) => {
 };
 
 module.exports = {
-  validateJWT,
+  validatesJWT,
 };

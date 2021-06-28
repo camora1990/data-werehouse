@@ -2,7 +2,7 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 
 const { userLogin } = require("../controllers");
-const { validateFields } = require("../middelwares");
+const { validatesFields } = require("../middelwares");
 
 const router = Router();
 router.post(
@@ -15,7 +15,7 @@ router.post(
       .if(check("email").exists())
       .isEmail()
       .withMessage("Enter valid email!"),
-    validateFields,
+    validatesFields,
   ],
   userLogin
 );
